@@ -1,3 +1,15 @@
+0.1.14
+- support for beta runtime 1.5.205
+
+0.1.13
+- support for beta runtime 1.5.157
+
+0.1.12
+- support for beta runtime 1.5.154
+
+0.1.11:
+- support for beta runtime 1.5.151
+
 0.1.10:
 - support for beta runtime 1.5.147
 - DataLoaded, PreSaveGame/PostSaveGame/PreLoadGame/PostLoadGame plugin messages
