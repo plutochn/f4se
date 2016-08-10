@@ -70,22 +70,37 @@ public:
 		Entry	* data;
 
 		MEMBER_FN_PREFIX(Ref);
-		DEFINE_MEMBER_FN(ctor, Ref *, 0x01AD05C0, const char * buf);
-		DEFINE_MEMBER_FN(wctor, Ref *, 0x01AD0AC0, const wchar_t * buf);
-		DEFINE_MEMBER_FN(Set, Ref *, 0x01AD0BF0, const char * buf);
-		DEFINE_MEMBER_FN(Release, void, 0x01AD1850);
+		DEFINE_MEMBER_FN(ctor, Ref *, 0x01ACEE10, const char * buf);
+		DEFINE_MEMBER_FN(Set, Ref *, 0x01ACEF40, const char * buf);
+		DEFINE_MEMBER_FN(Release, void, 0x01AD00A0);
 
-		Ref() :data(NULL) { }
+		Ref();
 		Ref(const char * buf);
-		Ref(const wchar_t * buf);
-
-		inline void Release()
-		{
-			CALL_MEMBER_FN(this, Release)();
-		}
+		
+		void Release() { CALL_MEMBER_FN(this, Release)(); }
 
 		bool operator==(const Ref& lhs) const { return data == lhs.data; }
 		bool operator<(const Ref& lhs) const { return data < lhs.data; }
+
+		const char * c_str() { return operator const char *(); }
+		operator const char *() { return data->Get<char>(); }
+	};
+
+	struct RefW
+	{
+		Entry	* data;
+
+		MEMBER_FN_PREFIX(RefW);
+		DEFINE_MEMBER_FN(ctor, RefW *, 0x01ACF310, const wchar_t * buf);
+
+		RefW();
+		RefW(const wchar_t * buf);
+
+		bool operator==(const Ref& lhs) const { return data == lhs.data; }
+		bool operator<(const Ref& lhs) const { return data < lhs.data; }
+
+		const wchar_t * c_str() { return operator const wchar_t *(); }
+		operator const wchar_t *() { return data->Get<wchar_t>(); }
 	};
 
 	// 10
@@ -101,7 +116,20 @@ public:
 	UInt8	isInit;			// 80800
 };
 
-typedef StringCache::Ref	BSFixedString;
+typedef StringCache::Ref BSFixedString;
+typedef StringCache::RefW BSFixedStringW;
+
+class BSAutoFixedString : public BSFixedString
+{
+public:
+	BSAutoFixedString() : BSFixedString() { }
+	BSAutoFixedString(const char * buf) : BSFixedString(buf) { }
+
+	~BSAutoFixedString()
+	{
+		Release();
+	}
+};
 
 // 10
 class BSString
