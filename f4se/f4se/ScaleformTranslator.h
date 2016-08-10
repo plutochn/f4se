@@ -28,14 +28,14 @@ public:
 	static inline UInt32 GetHash(const BSFixedString * key)
 	{
 		UInt32 hash;
-		CalculateCRC32_64(&hash, (UInt64)(*key)->Get<wchar_t>(), 0);
+		CalculateCRC32_64(&hash, (UInt64)key->data->Get<char>(), 0);
 		return hash;
 	}
 
 	void Dump(void)
 	{
-		_MESSAGE("\t\tkey: %S ", key->Get<wchar_t>());
-		_MESSAGE("\t\ttranslation: %S", translation->Get<wchar_t>());
+		_MESSAGE("\t\tkey: %S ", key.data ? key.data->Get<char>() : "");
+		_MESSAGE("\t\ttranslation: %S", translation.data ? translation.data->Get<wchar_t>() : L"");
 	}
 };
 
@@ -45,6 +45,6 @@ typedef tHashSet<TranslationTableItem, BSFixedString> TranslationTable;
 class BSScaleformTranslator : public GFxTranslator
 {
 public:
-	UInt64 unk18[(0x28- 0x18) / 8];	// 18
-	TranslationTable	translations;	// 28
+	UInt64 unk18[(0x20- 0x18) / 8];		// 18
+	TranslationTable	translations;	// 20
 };
